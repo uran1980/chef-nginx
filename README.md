@@ -124,6 +124,9 @@ default["nginx"]["ssl_session_timeout"]      = "10m"
 default["nginx"]["passenger_enable"]         = false
 default["nginx"]["passenger_max_pool_size"]  = 6
 default["nginx"]["passenger_pool_idle_time"] = 300
+
+default["nginx"]["enable_stub_status"] = true
+default["nginx"]["status_port"]        = 80
 ```
 
 
@@ -144,6 +147,17 @@ Including, but not limited to ...
 3. Commit your changes (`git commit -am 'Added some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+
+
+## Contributors
+
+Many thanks go to the following [contributors](https://github.com/phlipper/chef-nginx/graphs/contributors) who have helped to make this cookbook even better:
+
+* **[@jtimberman](https://github.com/jtimberman)**
+    * add license file
+    * set executable bit for directories
+* **[@dwradcliffe](https://github.com/dwradcliffe)**
+    * add attribute for nginx status port
 
 
 ## License
