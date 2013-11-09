@@ -48,11 +48,13 @@ This cookbook installs the Nginx components if not present, and pulls updates if
 ## Attributes
 
 ```ruby
-default["nginx"]["dir"]      = "/etc/nginx"
-default["nginx"]["log_dir"]  = "/var/log/nginx"
-default["nginx"]["user"]     = "www-data"
-default["nginx"]["binary"]   = "/usr/sbin/nginx"
-default["nginx"]["pid_file"] = "/var/run/nginx.pid"
+default["nginx"]["dir"]        = "/etc/nginx"
+default["nginx"]["log_dir"]    = "/var/log/nginx"
+default["nginx"]["user"]       = "www-data"
+default["nginx"]["binary"]     = "/usr/sbin/nginx"
+default["nginx"]["pid_file"]   = "/var/run/nginx.pid"
+default["nginx"]["version"]    = nil
+default["nginx"]["package_name"] = "nginx"  # nginx[-light|full|extras]
 
 default["nginx"]["log_format"] = <<-FORMAT
   '$remote_addr $host $remote_user [$time_local] "$request" '
@@ -127,6 +129,38 @@ default["nginx"]["passenger_pool_idle_time"] = 300
 
 default["nginx"]["enable_stub_status"] = true
 default["nginx"]["status_port"]        = 80
+
+default["nginx"]["skip_default_site"]  = false
+
+default["nginx"]["repository"] = "official"
+default["nginx"]["repository_sources"] = {
+  "official" => {
+    "uri"          => "http://nginx.org/packages/#{node["platform"]}",
+    "distribution" => node["lsb"]["codename"],
+    "components"   => ["nginx"],
+    "keyserver"    => nil,
+    "key"          => "http://nginx.org/keys/nginx_signing.key",
+    "deb_src"      => false
+  },
+
+  "ppa" => {
+    "uri"          => "http://ppa.launchpad.net/nginx/stable/ubuntu",
+    "distribution" => node["lsb"]["codename"],
+    "components"   => ["main"],
+    "keyserver"    => "keyserver.ubuntu.com",
+    "key"          => "C300EE8C",
+    "deb_src"      => true,
+  },
+
+  "phusion" => {
+    "uri"          => "https://oss-binaries.phusionpassenger.com/apt/passenger",
+    "distribution" => node["lsb"]["codename"],
+    "components"   => ["main"],
+    "keyserver"    => "keyserver.ubuntu.com",
+    "key"          => "561F9B9CAC40B2F7",
+    "deb_src"      => true
+  }
+}
 ```
 
 
@@ -158,6 +192,10 @@ Many thanks go to the following [contributors](https://github.com/phlipper/chef-
     * set executable bit for directories
 * **[@dwradcliffe](https://github.com/dwradcliffe)**
     * add attribute for nginx status port
+    * add attribute for nginx version
+    * add option to use PPA repository instead of official nginx repository
+* **[@0rca](https://github.com/0rca)**
+    * add `skip_default_site` attribute
 
 
 ## License

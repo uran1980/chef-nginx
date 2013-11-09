@@ -7,11 +7,13 @@
 # Copyright 2013, Phil Cohen
 #
 
-default["nginx"]["dir"]      = "/etc/nginx"
-default["nginx"]["log_dir"]  = "/var/log/nginx"
-default["nginx"]["user"]     = "www-data"
-default["nginx"]["binary"]   = "/usr/sbin/nginx"
-default["nginx"]["pid_file"] = "/var/run/nginx.pid"
+default["nginx"]["dir"]        = "/etc/nginx"
+default["nginx"]["log_dir"]    = "/var/log/nginx"
+default["nginx"]["user"]       = "www-data"
+default["nginx"]["binary"]     = "/usr/sbin/nginx"
+default["nginx"]["pid_file"]   = "/var/run/nginx.pid"
+default["nginx"]["version"]    = nil
+default["nginx"]["package_name"] = "nginx"  # nginx[-light|full|extras]
 
 default["nginx"]["log_format"] = <<-FORMAT
   '$remote_addr $host $remote_user [$time_local] "$request" '
@@ -86,3 +88,35 @@ default["nginx"]["passenger_pool_idle_time"] = 300
 
 default["nginx"]["enable_stub_status"] = true
 default["nginx"]["status_port"]        = 80
+
+default["nginx"]["skip_default_site"]  = false
+
+default["nginx"]["repository"] = "official"
+default["nginx"]["repository_sources"] = {
+  "official" => {
+    "uri"          => "http://nginx.org/packages/#{node["platform"]}",
+    "distribution" => node["lsb"]["codename"],
+    "components"   => ["nginx"],
+    "keyserver"    => nil,
+    "key"          => "http://nginx.org/keys/nginx_signing.key",
+    "deb_src"      => false
+  },
+
+  "ppa" => {
+    "uri"          => "http://ppa.launchpad.net/nginx/stable/ubuntu",
+    "distribution" => node["lsb"]["codename"],
+    "components"   => ["main"],
+    "keyserver"    => "keyserver.ubuntu.com",
+    "key"          => "C300EE8C",
+    "deb_src"      => true,
+  },
+
+  "phusion" => {
+    "uri"          => "https://oss-binaries.phusionpassenger.com/apt/passenger",
+    "distribution" => node["lsb"]["codename"],
+    "components"   => ["main"],
+    "keyserver"    => "keyserver.ubuntu.com",
+    "key"          => "561F9B9CAC40B2F7",
+    "deb_src"      => true
+  }
+}
